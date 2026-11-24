@@ -23,6 +23,39 @@ try {
 }
 }
 
+const loginUser = async(req:Request,res:Response)=>{
+    try {
+        const result = await authServices.loginUserIntoDB(req.body)
+
+
+        // todo: cookies set 
+        const {refreshToken} = result;
+        res.cookie("Refresh-Token",refreshToken,{
+            secure:false,
+            httpOnly:true,
+            sameSite:"lax",
+            path:'/',
+            domain:"localhost"
+        })
+
+        sendResponse(res,{
+            statusCode:200,
+            success:true,
+            message:"User login successful",
+            data:result
+        })
+    } catch (error:any) {
+        sendResponse(res,{
+            statusCode:500,
+            success:false,
+            message:error.message,
+            error:error
+        })
+    }
+
+}
+
 export const authController = {
     createUser,
+    loginUser
 }
