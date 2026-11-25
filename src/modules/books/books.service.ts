@@ -10,6 +10,22 @@ const createBookIntoDB = async(payload:IBooks)=>{
     return result;
 }
 
+const getAllBooksIntoDB = async()=>{
+    const result = await pool.query(`
+        SELECT * FROM books
+        `)
+    return result;
+}
+
+const getBook = async(id:string)=>{
+    const result = await pool.query(`
+        SELECT * FROM books WHERE id=$1
+        `,[id]);
+    return result
+}
+
 export const booksService = {
     createBookIntoDB,
+    getAllBooksIntoDB,
+    getBook
 }

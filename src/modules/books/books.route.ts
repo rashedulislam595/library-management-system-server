@@ -3,6 +3,8 @@ import { booksController } from "./books.controller";
 
 const router = Router();
 
-router.post('/',booksController.createBook)
+router.post('/',booksController.createBook);
+router.get('/',booksController.getAllBooks);
+router.get('/:id',booksController.getBook)
 
 export const booksRoute = router;
