@@ -8,3 +8,11 @@ export interface IBooks {
     description:string,
     author:string
 }
+
+export interface IUpdateBook {
+    title:string,
+    total_copies:number,
+    available_copies:number,
+    description:string,
+    author:string
+}

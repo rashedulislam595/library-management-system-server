@@ -25,40 +25,69 @@ const createBook = async (req: Request, res: Response) => {
 const getAllBooks = async (req: Request, res: Response) => {
     try {
         const result = await booksService.getAllBooksIntoDB()
-        sendResponse(res,{
-            statusCode:200,
-            success:true,
-            message:"Books retrieve successfully!!",
-            data:result.rows
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Books retrieve successfully!!",
+            data: result.rows
         })
-    } catch (error:any) {
-        sendResponse(res,{
-            statusCode:500,
-            success:false,
-            message:error.message,
-            error:error
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            error: error
         })
     }
 }
 
-const getBook = async(req:Request, res:Response)=>{
+const getBook = async (req: Request, res: Response) => {
     try {
-        const {id} = req.params
+        const { id } = req.params
         const result = await booksService.getBook(id as string)
-        
+
+        if (result.rowCount === 0) {
+            return sendResponse(res, {
+                statusCode: 404,
+                success: false,
+                message: "book not found!!"
+            })
+        }
+
+        sendResponse(res, {
+            statusCode: 200,
+            success: true,
+            message: "Book retrieve successfully!!",
+            data: result.rows[0]
+        })
+    } catch (error: any) {
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            error: error
+        })
+    }
+}
+
+const updateBook = async (req: Request, res: Response) => {
+    try {
+        const{id} = req.params;
+        const result = await booksService.updateBookIntoDB(req.body, id as string)
+
         if(result.rowCount === 0){
-            return sendResponse(res,{
+            sendResponse(res,{
                 statusCode:404,
                 success:false,
-                message:"book not found!!"
+                message:'Book not found!!'
             })
         }
 
         sendResponse(res,{
             statusCode:200,
             success:true,
-            message:"Book retrieve successfully!!",
-            data:result.rows[0]
+            message:'Book update successfully!!',
+            data: result.rows[0]
         })
     } catch (error:any) {
         sendResponse(res,{
@@ -73,5 +102,6 @@ const getBook = async(req:Request, res:Response)=>{
 export const booksController = {
     createBook,
     getAllBooks,
-    getBook
+    getBook,
+    updateBook
 }

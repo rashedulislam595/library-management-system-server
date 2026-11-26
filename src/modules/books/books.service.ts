@@ -1,5 +1,5 @@
 import { pool } from "../../db";
-import type { IBooks } from "./books.interface";
+import type { IBooks, IUpdateBook } from "./books.interface";
 
 const createBookIntoDB = async(payload:IBooks)=>{
     const {title,category,publisher,published_year,total_copies,available_copies,description,author} = payload;
@@ -24,8 +24,28 @@ const getBook = async(id:string)=>{
     return result
 }
 
+const updateBookIntoDB = async(payload:IUpdateBook, id:string)=>{
+
+    const{title,total_copies,available_copies,description,author} = payload
+
+    const result = await pool.query(`
+        UPDATE books
+        SET
+        title = COALESCE($1,title),
+        total_copies = COALESCE($2,total_copies),
+        available_copies = COALESCE($3,available_copies),
+        description = COALESCE($4, description),
+        author = COALESCE($5,author),
+        updated_at = NOW()
+
+        WHERE id=$6 RETURNING *
+        `,[title ?? null, total_copies ?? null, available_copies ?? null, description ?? null, author ?? null, id]);
+    return result
+}
+
 export const booksService = {
     createBookIntoDB,
     getAllBooksIntoDB,
-    getBook
+    getBook,
+    updateBookIntoDB
 }
