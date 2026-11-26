@@ -43,9 +43,17 @@ const updateBookIntoDB = async(payload:IUpdateBook, id:string)=>{
     return result
 }
 
+const deleteBookIntoDB = async(id:string)=>{
+    const result = await pool.query(`
+        DELETE FROM books WHERE id=$1
+        RETURNING *`,[id])
+    return result;
+}
+
 export const booksService = {
     createBookIntoDB,
     getAllBooksIntoDB,
     getBook,
-    updateBookIntoDB
+    updateBookIntoDB,
+    deleteBookIntoDB
 }
